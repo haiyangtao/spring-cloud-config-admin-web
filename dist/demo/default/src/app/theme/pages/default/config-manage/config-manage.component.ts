@@ -635,6 +635,12 @@ export class ConfigManageComponent implements OnInit {
                 continue;
             }
             let tmps = item.split('=');
+            if (tmps[0].indexOf('#') == 0) {
+                continue;
+            }
+            
+
+
             if (tmps.length !== 2) {
                 toastr.error('properties请都按照对应的键值对配置!');
                 return;
