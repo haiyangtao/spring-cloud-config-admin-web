@@ -93,7 +93,7 @@ export class ConfigManageComponent implements OnInit {
         // });
     }
 
-    changeYamlPage(){
+    changeYamlPage() {
         let params = {}
         for (let i = 0; i < this.persistent.length; i++) {
             params[this.persistent[i].key] = this.persistent[i].value;
@@ -105,7 +105,7 @@ export class ConfigManageComponent implements OnInit {
             }
         }
         this.persistent = [];
-        let keys = Object.keys(params);
+        let keys = Object.keys(params).sort();
         for (let i = 0; i < keys.length; i++) {
             this.persistent.push({
                 key: keys[i],
@@ -113,13 +113,13 @@ export class ConfigManageComponent implements OnInit {
             });
         }
         this.code = yaml.safeDump(this.translateToYaml(params));
-        if(this.code.indexOf('{}') == 0){
+        if (this.code.indexOf('{}') == 0) {
             this.code = ''
         }
         $("#m_modal_yaml_editor").modal('show');
     }
 
-    changePropertyPage(){
+    changePropertyPage() {
         let params = {}
         for (let i = 0; i < this.persistent.length; i++) {
             params[this.persistent[i].key] = this.persistent[i].value;
@@ -131,7 +131,7 @@ export class ConfigManageComponent implements OnInit {
             }
         }
         this.persistent = [];
-        let keys = Object.keys(params);
+        let keys = Object.keys(params).sort();
         for (let i = 0; i < keys.length; i++) {
             this.persistent.push({
                 key: keys[i],
@@ -148,7 +148,7 @@ export class ConfigManageComponent implements OnInit {
     }
 
     async configTypeChange(configType) {
-        switch(configType){
+        switch (configType) {
             case 1:
                 break;
             case 2:
@@ -259,7 +259,7 @@ export class ConfigManageComponent implements OnInit {
         let result = await this.ajax.get('/xhr/property/persistent', params);
         this.persistentList = result;
         this.persistent = [];
-        let keys = Object.keys(this.persistentList);
+        let keys = Object.keys(this.persistentList).sort();
         for (let i = 0; i < keys.length; i++) {
             this.persistent.push({
                 key: keys[i],
@@ -307,7 +307,7 @@ export class ConfigManageComponent implements OnInit {
      */
     translateToYaml(json) {
         let yamlJson = {};
-        let keys = Object.keys(json);
+        let keys = Object.keys(json).sort();
         for (let i = 0; i < keys.length; i++) {
             let tmps = keys[i].split('.');
             let result = {};
@@ -354,7 +354,7 @@ export class ConfigManageComponent implements OnInit {
      * @param ymlJson
      */
     YamlToJSON(ymlJson) {
-        let keys = Object.keys(ymlJson);
+        let keys = Object.keys(ymlJson).sort();
         let result = {};
         let bEnd = true;
         for (let i = 0; i < keys.length; i++) {
@@ -364,7 +364,7 @@ export class ConfigManageComponent implements OnInit {
                 result[keys[i]] = ymlJson[keys[i]];
             } else {
                 console.log(ymlJson[keys[i]]);
-                let tmp_keys = Object.keys(ymlJson[keys[i]]);
+                let tmp_keys = Object.keys(ymlJson[keys[i]]).sort();
                 for (let j = 0; j < tmp_keys.length; j++) {
                     result[keys[i] + '.' + tmp_keys[j]] =
                         ymlJson[keys[i]][tmp_keys[j]];
@@ -388,10 +388,10 @@ export class ConfigManageComponent implements OnInit {
             });
 
             $('#m_modal_1').modal('show');
-            this.configFromConfigServerList = result.map(item=>{
-                let keys = Object.keys(item.source);
+            this.configFromConfigServerList = result.map(item => {
+                let keys = Object.keys(item.source).sort();
                 item.tmpResult = [];
-                for(let i = 0; i < keys.length; i++){
+                for (let i = 0; i < keys.length; i++) {
                     item.tmpResult.push({
                         name: keys[i],
                         value: item.source[keys[i]]
@@ -600,13 +600,13 @@ export class ConfigManageComponent implements OnInit {
         });
     }
 
-    closeEditorModal(){
+    closeEditorModal() {
         $("#m_modal_yaml_editor").modal('hide');
         $("#m_modal_property_editor").modal('hide');
     }
 
     // 保存数据
-    async saveYmlEditor(){
+    async saveYmlEditor() {
         let tmp = yaml.safeLoad(this.code);
         let result = false;
         while (!result) {
@@ -616,7 +616,7 @@ export class ConfigManageComponent implements OnInit {
         }
         this.persistentList = tmp;
         this.persistent = [];
-        let keys = Object.keys(this.persistentList);
+        let keys = Object.keys(this.persistentList).sort();
         for (let i = 0; i < keys.length; i++) {
             this.persistent.push({
                 key: keys[i],
@@ -626,7 +626,7 @@ export class ConfigManageComponent implements OnInit {
         $("#m_modal_yaml_editor").modal('hide');
     }
 
-    async savePropertyEditor(){
+    async savePropertyEditor() {
         let params = {}
         let result = this.code_properties.split('\n');
         for (let i = 0; i < result.length; i++) {
@@ -635,17 +635,17 @@ export class ConfigManageComponent implements OnInit {
                 continue;
             }
             let tmps = item.split('=');
+            if (tmps[0].indexOf('#') == 0) {
+                continue;
+            }
             if (tmps.length !== 2) {
                 toastr.error('properties请都按照对应的键值对配置!');
                 return;
             }
-            if (tmps[0].indexOf('#') == 0) {
-                continue;
-            }
             params[tmps[0]] = tmps[1];
         }
         this.persistent = [];
-        let keys = Object.keys(params);
+        let keys = Object.keys(params).sort();
         for (let i = 0; i < keys.length; i++) {
             this.persistent.push({
                 key: keys[i],

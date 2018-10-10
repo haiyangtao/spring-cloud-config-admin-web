@@ -92,7 +92,7 @@ export class Ajax {
                 },
                 (error: any) => {
                     console.log('====>', error);
-                    if (error.url == 'http://localhost:4200/login?error') {
+                    if (error.url == 'http://192.168.100.150:4200/login?error') {
                         reject('登录失败');
                     } else {
                         console.log('====>登录成功');
